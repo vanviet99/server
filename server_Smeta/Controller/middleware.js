@@ -2,20 +2,26 @@ const jwt = require('jsonwebtoken')
 
 const middlewreController = {
     verifyToken: (req, res, next) => {
-        const token = req.headers.token
-        if (token) {
-            // Bearer    
-            const accessToken = token.split(" ")[1]
-            jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-                if (err) {
-                    res.status(403).json("Token bị sai")
-                } else {
-                    req.user = user
-                    next()
-                }
-            })
+        const authHeader = req.headers.authorization;
+  
+        if (authHeader) {
+          const token = authHeader.split("Bearer ")[1]; // Loại bỏ "Bearer " để lấy mã token
+          
+          if (token) {
+            jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+              if (err) {
+                console.error(err);
+                res.status(403).json("Chưa đăng nhập");
+              } else {
+                req.user = user;
+                next();
+              }
+            });
+          } else {
+            res.status(401).json('Chưa Đăng Nhập');
+          }
         } else {
-            res.status(401).json('Chưa Đăng Nhập')
+          res.status(401).json('Chưa Đăng Nhập');
         }
     },
     verifyAdmin: (req, res, next) => {
