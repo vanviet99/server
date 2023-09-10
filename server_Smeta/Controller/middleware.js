@@ -3,25 +3,24 @@ const jwt = require('jsonwebtoken')
 const middlewreController = {
     verifyToken: (req, res, next) => {
         const authHeader = req.headers.authorization;
-  
+  console.log(authHeader, "authHeader");
         if (authHeader) {
           const token = authHeader.split("Bearer ")[1]; // Loại bỏ "Bearer " để lấy mã token
-          
+          console.log(token, " token");
           if (token) {
             jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
               if (err) {
-                console.error(err);
-                res.status(403).json("Chưa đăng nhập");
+                res.status(403).json("Chưa đăng nhập 1 ");
               } else {
                 req.user = user;
                 next();
               }
             });
           } else {
-            res.status(401).json('Chưa Đăng Nhập');
+            res.status(401).json('Chưa Đăng Nhập 2');
           }
         } else {
-          res.status(401).json('Chưa Đăng Nhập');
+          res.status(401).json('Chưa Đăng Nhập 3');
         }
     },
     verifyAdmin: (req, res, next) => {

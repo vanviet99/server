@@ -68,7 +68,8 @@ const authController = {
         { username: user.username },
         { refreshToken: token.refreshToken }
       );
-      res.status(200).json({ message: "Đăng nhập thành công", token });
+
+      res.status(200).json({ message: "Đăng nhập thành công", token, user:user });
     } catch (error) {
       res.status(500).json({ message: "Lỗi đăng nhập", error });
     }
@@ -100,45 +101,54 @@ const authController = {
   },
   logout: async (req, res) => {
     try {
-      const { username } = req.body;
-      if (!username) {
-        return res.status(400).json({ message: "Không có username" });
-      }
-      const user = await userModal.findOne({ username: username });
-      if (!user) {
-        return res.status(404).json({ message: "Không tìm thấy người dùng" });
-      }
-      const refreshToken = user.refreshToken;
+      console.log(req.user);
+      const result = await userModal.updateOne(
+        { username: req.user.username },
+        { $unset: { refreshToken: 1 } }
+      );
 
-      if (!refreshToken) {
+      if (result.modifiedCount === 1) {
+        return res.status(200).json({ message: "Đăng xuất thành công" });
+      } else {
         return res
           .status(401)
-          .json({ message: "Người dùng không có refreshToken" });
+          .json({ message: "Không tìm thấy refreshToken" });
       }
+      // const user = await userModal.findOne({ username: username });
+      // if (!user) {
+      //   return res.status(404).json({ message: "Không tìm thấy người dùng" });
+      // }
+      // const refreshToken = user.refreshToken;
 
-      jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET,
-        async (err, decoded) => {
-          if (err) {
-            return res
-              .status(403)
-              .json({ message: "Refresh token không hợp lệ" });
-          }
-          const result = await userModal.updateOne(
-            { username: username },
-            { $unset: { refreshToken: 1 } }
-          );
+      // if (!refreshToken) {
+      //   return res
+      //     .status(401)
+      //     .json({ message: "Người dùng không có refreshToken" });
+      // }
 
-          if (result.modifiedCount === 1) {
-            return res.status(200).json({ message: "Đăng xuất thành công" });
-          } else {
-            return res
-              .status(401)
-              .json({ message: "Không tìm thấy refreshToken" });
-          }
-        }
-      );
+      // jwt.verify(
+      //   refreshToken,
+      //   process.env.REFRESH_TOKEN_SECRET,
+      //   async (err, decoded) => {
+      //     if (err) {
+      //       return res
+      //         .status(403)
+      //         .json({ message: "Refresh token không hợp lệ" });
+      //     }
+      //     const result = await userModal.updateOne(
+      //       { username: username },
+      //       { $unset: { refreshToken: 1 } }
+      //     );
+
+      //     if (result.modifiedCount === 1) {
+      //       return res.status(200).json({ message: "Đăng xuất thành công" });
+      //     } else {
+      //       return res
+      //         .status(401)
+      //         .json({ message: "Không tìm thấy refreshToken" });
+      //     }
+      //   }
+      // );
     } catch (error) {
       res.status(500).json({ message: "Lỗi đăng xuất", error });
     }
