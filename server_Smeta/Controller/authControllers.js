@@ -20,7 +20,7 @@ const authController = {
   },
   generateToken :(payload)=>{
     const {userId,username,email,role} = payload
-    const accessToken = jwt.sign({userId,username,email,role}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
+    const accessToken = jwt.sign({userId,username,email,role}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
     const refreshToken = jwt.sign({userId,username,email,role}, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
     return {accessToken,refreshToken}
   },
@@ -65,19 +65,15 @@ const authController = {
     logout: async (req, res) => {
       try {
         const { username } = req.body;
-        if (!username) {
-          return res.status(400).json({ message: 'Không có username' });
-        }
         const user = await userModal.findOne({ username: username });
         if (!user) {
-          return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+          return res.status(404).json({ message: 'chưa đăng nhập' });
         }
         const refreshToken = user.refreshToken;
     
         if (!refreshToken) {
-          return res.status(401).json({ message: 'Người dùng không có refreshToken' });
+          return res.status(401).json({ message: 'chưa đăng nhập' });
         }
-    
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
           if (err) {
             return res.status(403).json({ message: 'Refresh token không hợp lệ' });
