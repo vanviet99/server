@@ -61,4 +61,37 @@ async function passwordretrieval(req, res) {
     }
   }
   
-module.exports = { sendAuthCode ,passwordretrieval};
+
+  async function changePassword(req, res) {
+    try {
+      const { passwords, password_cu, password_change } = req.body;
+      const userToUpdate = await user.findOne({ username: req.user.username });
+      if (!userToUpdate) {
+        return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+      }
+      const passwordMatch = await bcrypt.compare(password_cu, userToUpdate.password);
+  
+      if (!passwordMatch) {
+        return res.status(401).json({ message: 'Mật khẩu không đúng' });
+      }
+      if(passwords !== password_change){
+        return res.status(401).json({ message: 'Mật khẩu không trùng khớp' });
+      }else{
+        const saltRounds = 10;
+        const newPasswordHash = await bcrypt.hash(password_change, saltRounds);
+    
+        await user.findOneAndUpdate(
+          { username: req.user.username },
+          { password: newPasswordHash }
+        );
+    
+        return res.status(200).json({ message: 'Cập nhật mật khẩu thành công' });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Lỗi máy chủ' });
+    }
+  }
+  
+  
+module.exports = { sendAuthCode ,passwordretrieval,changePassword};
