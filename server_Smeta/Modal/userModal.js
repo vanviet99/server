@@ -32,6 +32,16 @@ const userSchema = mongoose.Schema({
     language:{
         type:String,
         default:'vietnam'
+    },
+    phone :{
+        type:Number
+    },
+    totleMoney:{
+        type:Number,
+        default:0
+    },
+    acction :{
+        type:[]
     }
 },{collection:'user'})
 

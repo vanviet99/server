@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 const middlewreController = {
     verifyToken: (req, res, next) => {
         const authHeader = req.headers.authorization;
-  console.log(authHeader, "authHeader");
         if (authHeader) {
           const token = authHeader.split("Bearer ")[1]; // Loại bỏ "Bearer " để lấy mã token
           console.log(token, " token");

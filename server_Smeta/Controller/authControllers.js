@@ -114,48 +114,15 @@ const authController = {
           .status(401)
           .json({ message: "Không tìm thấy refreshToken" });
       }
-      // const user = await userModal.findOne({ username: username });
-      // if (!user) {
-      //   return res.status(404).json({ message: "Không tìm thấy người dùng" });
-      // }
-      // const refreshToken = user.refreshToken;
-
-      // if (!refreshToken) {
-      //   return res
-      //     .status(401)
-      //     .json({ message: "Người dùng không có refreshToken" });
-      // }
-
-      // jwt.verify(
-      //   refreshToken,
-      //   process.env.REFRESH_TOKEN_SECRET,
-      //   async (err, decoded) => {
-      //     if (err) {
-      //       return res
-      //         .status(403)
-      //         .json({ message: "Refresh token không hợp lệ" });
-      //     }
-      //     const result = await userModal.updateOne(
-      //       { username: username },
-      //       { $unset: { refreshToken: 1 } }
-      //     );
-
-      //     if (result.modifiedCount === 1) {
-      //       return res.status(200).json({ message: "Đăng xuất thành công" });
-      //     } else {
-      //       return res
-      //         .status(401)
-      //         .json({ message: "Không tìm thấy refreshToken" });
-      //     }
-      //   }
-      // );
     } catch (error) {
       res.status(500).json({ message: "Lỗi đăng xuất", error });
     }
   },
   test_verifyToken: async (req, res) =>{
-    res.status(200).json(req.user)
-  }
-};
-
+    const ipAddress = req.ip;
+    // const ipv4Address = ip6.v4(ipAddress);
+    
+    res.status(200).json(ipAddress);
+}
+}
 module.exports = authController;

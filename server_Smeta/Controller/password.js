@@ -3,7 +3,6 @@ const user = require('../Modal/userModal');
 const crypto = require('crypto');
 const bcrypt = require("bcrypt");
 
-
 function generateAuthCode() {
   const buffer = crypto.randomBytes(4);
   return buffer.toString('hex').toUpperCase();
