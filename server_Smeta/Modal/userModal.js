@@ -5,14 +5,11 @@ const userSchema = mongoose.Schema({
     username:{
         type: String,
         required:true,
-        minlength:6,
-        maxlength:20,
         unique:true
     },
     password:{
         type: String,
         required:true,
-        minlength:6,
     },
     role : {
         type: String,
@@ -31,7 +28,7 @@ const userSchema = mongoose.Schema({
     },
     language:{
         type:String,
-        default:'vietnam'
+        default:'VN'
     },
     phone :{
         type:Number
@@ -40,8 +37,12 @@ const userSchema = mongoose.Schema({
         type:Number,
         default:0
     },
-    acction :{
+    action :{
         type:[]
+    },
+    createAt: {
+        type:Date,
+        default: Date.now()
     }
 },{collection:'user'})
 

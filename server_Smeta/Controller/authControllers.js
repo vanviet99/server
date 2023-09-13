@@ -21,6 +21,8 @@ const authController = {
         username: req.body.username,
         password: password,
         email: req.body.email,
+        phone: req.body.phone,
+        language: req.body.language,
       });
       const userdata = await userModal.find();
 
@@ -30,14 +32,14 @@ const authController = {
     }
   },
   generateToken: (payload) => {
-    const { userId, username, email, role } = payload;
+    const { userId, username, email, role , language, phone,totleMoney,  createAt , action  } = payload;
     const accessToken = jwt.sign(
-      { userId, username, email, role },
+      { userId, username, email, role,  language, phone,totleMoney,  createAt , action  },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "30s" }
     );
     const refreshToken = jwt.sign(
-      { userId, username, email, role },
+      { userId, username, email, role,  language, phone,totleMoney ,  createAt , action },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "30d" }
     );
@@ -62,6 +64,11 @@ const authController = {
         username: user.username,
         email: user.email,
         role: user.role,
+        phone: user.phone,
+        language: user.language,
+        totleMoney: user.totleMoney,
+        createAt: user.createAt,
+        action: user.action
       });
       // res.cookie( 'token1231231', JSON.stringify(token) , {expires: new Date( Date.now() + 30000)})
       let user_refreshToken = await userModal.updateOne(
@@ -78,7 +85,6 @@ const authController = {
     const refreshToken = req.body.refreshToken;
     if (!refreshToken) res.status(401);
     const user = await userModal.findOne({ refreshToken: refreshToken });
-    console.log(user);
     if (!user) {
       return res.status(403);
     }
@@ -89,6 +95,11 @@ const authController = {
         username: user.username,
         email: user.email,
         role: user.role,
+        phone: user.phone,
+        language: user.language,
+        totleMoney: user.totleMoney,
+        createAt: user.createAt,
+        action: user.action
       });
       const user_refreshToken = await userModal.updateOne(
         { username: user.username },
@@ -119,10 +130,11 @@ const authController = {
     }
   },
   test_verifyToken: async (req, res) =>{
-    const ipAddress = req.ip;
+    console.log(12312313123, req.user);
+    // const ipAddress = req.ip;
     // const ipv4Address = ip6.v4(ipAddress);
     
-    res.status(200).json(ipAddress);
+    res.status(200).json(req.user);
 }
 }
 module.exports = authController;
