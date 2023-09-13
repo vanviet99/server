@@ -12,8 +12,17 @@ app.use(cors())
 app.use(bodyParser.json())
 
 app.use(cookieParser());
-app.use("/auth",authRouter)  
-app.use("/pass",password)  
+const react = `/apps/server/client/build`
+
+app.use("/api/auth",authRouter)  
+app.use("/api/pass",password)  
+app.use(express.static(react));
+
+app.get('*', (req, res) => {
+    res.sendFile(`${react}/index.html`);
+}); 
+
+//TEST REAL TIME
 app.listen(5000,()=>{
-    console.log("server is running")
+    console.log("server is running")  
 })

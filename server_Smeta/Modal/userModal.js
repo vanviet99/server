@@ -31,7 +31,7 @@ const userSchema = mongoose.Schema({
     },
     language:{
         type:String,
-        default:'vietnam'
+        default:'VI'
     },
     phone :{
         type:Number
